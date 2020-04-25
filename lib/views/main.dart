@@ -44,7 +44,7 @@ class HomePageState extends State<HomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-
+        sleepRecords.add(new SleepRecord(sleepType: 'X',startingHour: 'X',sleepDuration: 'X'));
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => AddRecordView()),

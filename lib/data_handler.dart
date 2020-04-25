@@ -1,14 +1,22 @@
-class DataHandler {
-  static String getCurrentDate(){
-    var timeNow = DateTime.now();
-    String weekday = intToWeekday(timeNow);
-    int day = timeNow.day;
-    String month = intToMonth(timeNow);
-    int year = timeNow.year;
+import 'package:flutter/material.dart';
 
+class DataHandler {
+  static var timeNow = DateTime.now();
+  static int day = timeNow.day;
+  static int month = timeNow.month;
+  static int year = timeNow.year;
+  static int hour = TimeOfDay.now().hour;
+  static int minutes = TimeOfDay.now().minute;
+  static String getCurrentDate(){
+    String weekday = intToWeekday();
+    String month = intToMonthShort();
     return '$weekday, $day $month $year';
   }
-  static String intToMonth(var timeNow){
+  static String getCurrentDateAndTime(){
+    String month = intToMonthLong();
+    return '$day $month $year, $hour:$minutes';
+  }
+  static String intToMonthShort(){
     String month;
     switch(timeNow.month){
       case 1:
@@ -50,7 +58,49 @@ class DataHandler {
     }
     return month;
   }
-  static String intToWeekday(var timeNow){
+  static String intToMonthLong(){
+    String month;
+    switch(timeNow.month){
+      case 1:
+        month = 'January';
+        break;
+      case 2:
+        month = 'February';
+        break;
+      case 3:
+        month = 'March';
+        break;
+      case 4:
+        month = 'April';
+        break;
+      case 5:
+        month = 'May';
+        break;
+      case 6:
+        month = 'June';
+        break;
+      case 7:
+        month = 'July';
+        break;
+      case 8:
+        month = 'August';
+        break;
+      case 9:
+        month = 'September';
+        break;
+      case 10:
+        month = 'October';
+        break;
+      case 11:
+        month = 'November';
+        break;
+      case 12:
+        month = 'December';
+        break;
+    }
+    return month;
+  }
+  static String intToWeekday(){
     String weekday;
     switch(timeNow.weekday){
       case 1:
