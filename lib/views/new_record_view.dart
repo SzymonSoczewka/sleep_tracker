@@ -12,7 +12,7 @@ class AddRecordView extends StatelessWidget {
         appBar: AppBar(
           title: Text('Sleep Tracker'),
           centerTitle: true,
-          backgroundColor: Colors.amber[300],
+          backgroundColor: Colors.amber[400],
           automaticallyImplyLeading: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

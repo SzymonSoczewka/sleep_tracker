@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sleeptracker/data_handler.dart';
 import 'package:sleeptracker/model/sleep_record.dart';
 import 'package:sleeptracker/model/sleep_recordsDB.dart';
-import 'package:sleeptracker/views/add_record_view.dart';
+import 'package:sleeptracker/views/new_record_view.dart';
 
 void main() => runApp(MainView());
 
@@ -16,7 +16,7 @@ class MainView extends StatelessWidget {
           appBar: AppBar(
             title: Text('Sleep Tracker'),
             centerTitle: true,
-            backgroundColor: Colors.amber[300],
+            backgroundColor: Colors.amber[400],
           ),
           body: HomePage(title: 'RB'),
       ),
@@ -34,7 +34,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  List<SleepRecord> sleepRecords = new SleepRecordsDB().getSleepRecords();
+  List<SleepRecord> sleepRecords = [];
 
     void addRecord(BuildContext context) async {
 
