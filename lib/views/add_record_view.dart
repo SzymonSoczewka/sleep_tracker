@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sleeptracker/model/sleep_record.dart';
 import '../data_handler.dart';
 import 'package:numberpicker/numberpicker.dart';
 void main() => runApp(AddRecordView());
@@ -12,14 +13,14 @@ class AddRecordView extends StatelessWidget {
         appBar: AppBar(
           title: Text('Sleep Tracker'),
           centerTitle: true,
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.amber[300],
           automaticallyImplyLeading: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context,false),
           ),
         ),
-        body: HomePage(title: 'Flutter Demo Home Page'),
+        body: HomePage(title: 'RB'),
 
       ),
     );
@@ -44,13 +45,19 @@ class HomePageState extends State<HomePage> {
 
   void showDurationDialog() {
     var alertDialog = CupertinoAlertDialog(
-      title: Text('Pick sleep duration:',textAlign: TextAlign.center,),
+      title: Text('Select sleep duration:',textAlign: TextAlign.center,),
       content: CupertinoTimerPicker(
           mode: CupertinoTimerPickerMode.hm,
           onTimerDurationChanged: (value){
             setState(() {
-              currentDuration =  DataHandler.durationToString(value);
-              durationPicked = true;
+              String duration = DataHandler.durationToString(value);
+              currentDuration = duration;
+                if(duration.length>1) {
+                  durationPicked = true;
+                }
+                else{
+                  durationPicked = false;
+                }
             });
           }
       ),
@@ -67,7 +74,7 @@ class HomePageState extends State<HomePage> {
   }
   void showSleepTypeDialog(){
     var alertDialog = new CupertinoAlertDialog(
-      title: Text('Pick sleep type:'),
+      title: Text('Select sleep type:'),
       actions: <Widget>[
         CupertinoDialogAction(
           child: Text('Nap'),
@@ -95,7 +102,16 @@ class HomePageState extends State<HomePage> {
     );
 
   }
-
+  void executeSave(){
+    DataHandler.refresh();
+    Navigator.of(context, rootNavigator: true).pop(
+        new SleepRecord(
+            startingHour: DataHandler.getCurrentTime(),
+            sleepType: currentSleepType,
+            sleepDuration: currentDuration
+        )
+    );
+  }
 
     @override
     Widget build(BuildContext context) {
@@ -115,7 +131,7 @@ class HomePageState extends State<HomePage> {
                               flex: 2,
                               child: Image.asset(
                                 'assets/images/sleep.png',
-                                color: Colors.green,
+                                color: Colors.blueAccent,
                                 height: 40,
                               ),
                             ),
@@ -130,7 +146,7 @@ class HomePageState extends State<HomePage> {
                                       'Sleep type',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 24, color: Colors.green),
+                                          fontSize: 24, color: Colors.blueAccent),
                                     ),
                                     Text(
                                       currentSleepType,
@@ -160,7 +176,7 @@ class HomePageState extends State<HomePage> {
                                 flex: 2,
                                 child: Image.asset(
                                   'assets/images/clock.png', color: Colors
-                                    .green, height: 40,)),
+                                    .blueAccent, height: 40,)),
                             Expanded(
                               flex: 8, // 60%
                               child: Container(
@@ -171,7 +187,7 @@ class HomePageState extends State<HomePage> {
                                       'Sleep duration',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 24, color: Colors.green),
+                                          fontSize: 24, color: Colors.blueAccent),
                                     ),
                                     Text(
                                       currentDuration,
@@ -199,7 +215,7 @@ class HomePageState extends State<HomePage> {
                     top: 60.0
                 ),
                 child: RaisedButton(
-                  onPressed: () => print(null),
+                  onPressed: executeSave,
                   child: Text(
                     'Save',
                     style: TextStyle(
@@ -210,11 +226,11 @@ class HomePageState extends State<HomePage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(45.0),
                   ),
-                  color: Colors.green,
+                  color: Colors.blueAccent,
                 ),
                 height: 70,
                 width: 350,
-              ),
+              )
             ],
           )
       );
@@ -250,7 +266,7 @@ class DateAndTime extends StatelessWidget {
        children: <Widget>[
          Expanded(
            flex: 2,
-           child: Image.asset('assets/images/calendar.png',height: 40,),
+           child: Image.asset('assets/images/calendar.png',height: 40,color: Colors.blueAccent,),
          ),
          Expanded(
            flex: 8, // 60%
@@ -261,7 +277,7 @@ class DateAndTime extends StatelessWidget {
                  Text(
                    'Date and time',
                    textAlign: TextAlign.center,
-                   style: TextStyle(fontSize: 24,color: Colors.green),
+                   style: TextStyle(fontSize: 24,color: Colors.blueAccent),
                  ),
                  Text(
                    DataHandler.getCurrentDateAndTime(),
@@ -292,7 +308,7 @@ class ClosingButton extends StatelessWidget{
           right:20
       ),
       child: RaisedButton(
-        color: Colors.white,
+        color: Colors.blueAccent,
         onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
         child: Text('Close',textAlign: TextAlign.center,),
       ),

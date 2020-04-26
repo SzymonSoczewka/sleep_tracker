@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
 
 class DataHandler {
-  static var timeNow = DateTime.now();
+  static var timeNow;
   static int day = timeNow.day;
   static int month = timeNow.month;
   static int year = timeNow.year;
   static int hour = TimeOfDay.now().hour;
   static int minutes = TimeOfDay.now().minute;
   static String getCurrentDate(){
+    refresh();
     String weekday = intToWeekday();
     String month = intToMonthShort();
     return '$weekday, $day $month $year';
   }
   static String getCurrentDateAndTime(){
+    refresh();
     String month = intToMonthLong();
-    return '$day $month $year, $hour:$minutes';
+    String minutesAsString = prependZero(minutes);
+
+    return '$day $month $year, $hour:$minutesAsString';
+  }
+  static String getCurrentTime(){
+    refresh();
+    String minutesAsString = prependZero(minutes);
+    return '$hour:$minutes';
   }
   static String intToMonthShort(){
+    refresh();
     String month;
     switch(timeNow.month){
       case 1:
@@ -59,6 +69,7 @@ class DataHandler {
     return month;
   }
   static String intToMonthLong(){
+    refresh();
     String month;
     switch(timeNow.month){
       case 1:
@@ -101,6 +112,7 @@ class DataHandler {
     return month;
   }
   static String intToWeekday(){
+    refresh();
     String weekday;
     switch(timeNow.weekday){
       case 1:
@@ -132,12 +144,27 @@ class DataHandler {
     int minutes = duration.inMinutes  -  (hours * 60);
 
     if(hours>0 && minutes>0)
-      return '$hours hours, $minutes min.';
-    else if(hours<0)
-      return '$minutes min.';
-    else if(minutes<0)
-      return '$hours hours';
-    else
+      return '$hours hour(s), $minutes minute(s)';
+    else if(hours==0 && minutes==0)
+      return '-';
+    else if(hours == 0)
       return '$minutes minutes';
+    else
+      return '$hours hours';
+  }
+  static String prependZero(int minutes){
+    if(minutes<10)
+      return '0'+minutes.toString();
+    else
+      return minutes.toString();
+  }
+  static refresh(){
+    timeNow = DateTime.now();
+    day = timeNow.day;
+    month = timeNow.month;
+    year = timeNow.year;
+    hour = TimeOfDay.now().hour;
+    minutes = TimeOfDay.now().minute;
   }
   }
+

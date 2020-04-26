@@ -16,9 +16,9 @@ class MainView extends StatelessWidget {
           appBar: AppBar(
             title: Text('Sleep Tracker'),
             centerTitle: true,
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.amber[300],
           ),
-          body: HomePage(title: 'Flutter Demo Home Page'),
+          body: HomePage(title: 'RB'),
 
       ),
     );
@@ -37,24 +37,18 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   List<SleepRecord> sleepRecords = new SleepRecordsDB().getSleepRecords();
 
-  void addRecord() {
+    addRecord(BuildContext context) async {
+
+     DataHandler.refresh();
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddRecordView()),
+    );
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-        sleepRecords.add(new SleepRecord(sleepType: 'X',startingHour: 'X',sleepDuration: 'X'));
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AddRecordView()),
-        );
-
-    //  sleepRecords.add(
-    //      SleepRecord(sleepDuration: '6 hours 12 minutes', startingHour: '23:39', sleepType: 'Nap'));
-
+     sleepRecords.add(result);
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +62,9 @@ class HomePageState extends State<HomePage> {
                   top: 25.0
               ),
               child: RaisedButton(
-                onPressed: addRecord,
+                onPressed: (){
+                  addRecord(context);
+                },
                 child: Text(
                   'Add new sleeping record',
                   style:TextStyle(
@@ -79,7 +75,7 @@ class HomePageState extends State<HomePage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(45.0),
                 ),
-                color: Colors.green,
+                color: Colors.blueAccent,
               ),
               height: 70,
               width: 350,
@@ -117,7 +113,7 @@ class HomePageState extends State<HomePage> {
                                 Text(
                                     record.getSleepType(),
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 24,color: Colors.green),
+                                  style: TextStyle(fontSize: 24,color: Colors.blueAccent),
                                 ),
                                 Text(
                                     record.getSleepDuration(),
@@ -186,3 +182,4 @@ class Introduction extends StatelessWidget {
   }
 
 }
+
