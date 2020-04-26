@@ -127,4 +127,17 @@ class DataHandler {
     }
     return weekday;
   }
+  static String durationToString(Duration duration){
+    int hours = duration.inHours;
+    int minutes = duration.inMinutes  -  (hours * 60);
+
+    if(hours>0 && minutes>0)
+      return '$hours hours, $minutes min.';
+    else if(hours<0)
+      return '$minutes min.';
+    else if(minutes<0)
+      return '$hours hours';
+    else
+      return '$minutes minutes';
+  }
   }

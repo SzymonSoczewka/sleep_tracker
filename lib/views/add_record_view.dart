@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sleeptracker/model/sleep_record.dart';
-import 'package:sleeptracker/model/sleep_recordsDB.dart';
-
 import '../data_handler.dart';
-
+import 'package:numberpicker/numberpicker.dart';
 void main() => runApp(AddRecordView());
 class AddRecordView extends StatelessWidget {
   // This widget is the root of your application.
@@ -16,6 +13,11 @@ class AddRecordView extends StatelessWidget {
           title: Text('Sleep Tracker'),
           centerTitle: true,
           backgroundColor: Colors.green,
+          automaticallyImplyLeading: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context,false),
+          ),
         ),
         body: HomePage(title: 'Flutter Demo Home Page'),
 
@@ -33,162 +35,192 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  String currentSleepType= '-';
+  String currentDuration = '-';
+  List<String> sleepTypes = ['Nap', 'Night\'s sleep'];
 
+  bool durationPicked = false;
+  bool sleepTypePicked = false;
 
-  void addRecord() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        child: ListView(
-          children: <Widget>[
-            MainPicture(),
-            Column(
-              children: <Widget>[
-                Container(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 2,
-                        child: Image.asset('assets/images/calendar.png',height: 40,),
-                      ),
-                      Expanded(
-                        flex: 8, // 60%
-                        child: Container(
-                          margin: EdgeInsets.all(15),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                'Date and time',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24,color: Colors.green),
-                              ),
-                              Text(
-                                DataHandler.getCurrentDateAndTime(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18,color: Colors.grey[600]),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  decoration: new BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 0.1,
-                    ),) ,
-                ),
-                Container(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 2,
-                        child: Image.asset('assets/images/sleep.png',color: Colors.green,height: 40,),
-                      ),
-                      Expanded(
-
-                        flex: 8, // 60%
-                        child: Container(
-                          margin: EdgeInsets.all(15),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                'Sleep type',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24,color: Colors.green),
-                              ),
-                              Text(
-                                'Nap',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18,color: Colors.grey[600]),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                    decoration: new BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 0.1,
-                      ),)
-                ),
-                Container(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          flex: 2,
-                          child: Image.asset('assets/images/clock.png',color: Colors.green, height: 40,)),
-                      Expanded(
-
-                        flex: 8, // 60%
-                        child: Container(
-                          margin: EdgeInsets.all(15),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                'Sleep duration',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24,color: Colors.green),
-                              ),
-                              Text(
-                                '4 Hours 34 Minutes',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18,color: Colors.grey[600]),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                    decoration: new BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 0.1,
-                      ),)
-                ),
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  top: 60.0
-              ),
-              child: RaisedButton(
-                onPressed: addRecord,
-                child: Text(
-                  'Save',
-                  style:TextStyle(
-                      fontSize: 20,
-                      color: Colors.white
-                  ),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(45.0),
-                ),
-                color: Colors.green,
-              ),
-              height: 70,
-              width: 350,
-            ),
-    ],
-    )
+  void showDurationDialog() {
+    var alertDialog = CupertinoAlertDialog(
+      title: Text('Pick sleep duration:',textAlign: TextAlign.center,),
+      content: CupertinoTimerPicker(
+          mode: CupertinoTimerPickerMode.hm,
+          onTimerDurationChanged: (value){
+            setState(() {
+              currentDuration =  DataHandler.durationToString(value);
+              durationPicked = true;
+            });
+          }
+      ),
+      actions: <Widget>[
+        ClosingButton(),
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return alertDialog;
+      }
     );
   }
+  void showSleepTypeDialog(){
+    var alertDialog = new CupertinoAlertDialog(
+      title: Text('Pick sleep type:'),
+      actions: <Widget>[
+        CupertinoDialogAction(
+          child: Text('Nap'),
+          onPressed: () => setState(() {
+          currentSleepType = sleepTypes[0];
+          sleepTypePicked = true;
+          Navigator.of(context, rootNavigator: true).pop();
+          }),
+        ),
+        CupertinoDialogAction(
+          child: Text('Night\'s sleep'),
+          onPressed: () => setState(() {
+            currentSleepType = sleepTypes[1];
+            sleepTypePicked = true;
+            Navigator.of(context, rootNavigator: true).pop();
+          }),
+        ),
+      ],
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return alertDialog;
+        }
+    );
 
-}
+  }
+
+
+    @override
+    Widget build(BuildContext context) {
+      return Card(
+          child: ListView(
+            children: <Widget>[
+              MainPicture(),
+              Column(
+                children: <Widget>[
+                  DateAndTime(),
+                  InkWell(
+                    onTap: showSleepTypeDialog,
+                    child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: Image.asset(
+                                'assets/images/sleep.png',
+                                color: Colors.green,
+                                height: 40,
+                              ),
+                            ),
+                            Expanded(
+
+                              flex: 8, // 60%
+                              child: Container(
+                                margin: EdgeInsets.all(15),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Sleep type',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 24, color: Colors.green),
+                                    ),
+                                    Text(
+                                      currentSleepType,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 18,
+                                          color: Colors.black87),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        decoration: new BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 0.1,
+                          ),)
+                    ),
+                  ),
+                  InkWell(
+                    onTap: showDurationDialog,
+                    child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                                flex: 2,
+                                child: Image.asset(
+                                  'assets/images/clock.png', color: Colors
+                                    .green, height: 40,)),
+                            Expanded(
+                              flex: 8, // 60%
+                              child: Container(
+                                margin: EdgeInsets.all(15),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Sleep duration',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 24, color: Colors.green),
+                                    ),
+                                    Text(
+                                      currentDuration,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 18,
+                                          color: Colors.black87),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        decoration: new BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 0.1,
+                          ),)
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    top: 60.0
+                ),
+                child: RaisedButton(
+                  onPressed: () => print(null),
+                  child: Text(
+                    'Save',
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(45.0),
+                  ),
+                  color: Colors.green,
+                ),
+                height: 70,
+                width: 350,
+              ),
+            ],
+          )
+      );
+    }
+  }
+
 
 class MainPicture extends StatelessWidget {
   @override
@@ -209,4 +241,62 @@ class MainPicture extends StatelessWidget {
       ),
     );
   }
+}
+class DateAndTime extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+   return Container(
+     child: Row(
+       children: <Widget>[
+         Expanded(
+           flex: 2,
+           child: Image.asset('assets/images/calendar.png',height: 40,),
+         ),
+         Expanded(
+           flex: 8, // 60%
+           child: Container(
+             margin: EdgeInsets.all(15),
+             child: Column(
+               children: <Widget>[
+                 Text(
+                   'Date and time',
+                   textAlign: TextAlign.center,
+                   style: TextStyle(fontSize: 24,color: Colors.green),
+                 ),
+                 Text(
+                   DataHandler.getCurrentDateAndTime(),
+                   textAlign: TextAlign.center,
+                   style: TextStyle(fontSize: 18,color: Colors.black87),
+                 ),
+               ],
+             ),
+           ),
+         )
+       ],
+     ),
+     decoration: new BoxDecoration(
+       border: Border.all(
+         color: Colors.black,
+         width: 0.1,
+       ),) ,
+   );
+  }
+
+}
+class ClosingButton extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: 20,
+          right:20
+      ),
+      child: RaisedButton(
+        color: Colors.white,
+        onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+        child: Text('Close',textAlign: TextAlign.center,),
+      ),
+    );
+  }
+
 }
