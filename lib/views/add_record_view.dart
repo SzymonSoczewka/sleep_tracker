@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sleeptracker/model/sleep_record.dart';
 import '../data_handler.dart';
-import 'package:numberpicker/numberpicker.dart';
 void main() => runApp(AddRecordView());
 class AddRecordView extends StatelessWidget {
   // This widget is the root of your application.
@@ -39,7 +38,6 @@ class HomePageState extends State<HomePage> {
   String currentSleepType= '-';
   String currentDuration = '-';
   List<String> sleepTypes = ['Nap', 'Night\'s sleep'];
-
   bool durationPicked = false;
   bool sleepTypePicked = false;
 
@@ -102,15 +100,43 @@ class HomePageState extends State<HomePage> {
     );
 
   }
-  void executeSave(){
-    DataHandler.refresh();
-    Navigator.of(context, rootNavigator: true).pop(
-        new SleepRecord(
-            startingHour: DataHandler.getCurrentTime(),
-            sleepType: currentSleepType,
-            sleepDuration: currentDuration
+  void showErrorDialog(){
+    var alertDialog = new CupertinoAlertDialog(
+      title: Text(
+          'Error',
+          style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Text(
+          'If you want to create new sleep record, select sleep type and duration.',
+          style: TextStyle(fontSize: 20),
+      ),
+      actions: <Widget>[
+        CupertinoDialogAction(
+          child: ClosingButton(),
         )
+      ],
     );
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return alertDialog;
+        }
+    );
+  }
+  void executeSave(){
+    if(durationPicked && sleepTypePicked) {
+      DataHandler.refresh();
+      Navigator.of(context, rootNavigator: true).pop(
+          new SleepRecord(
+              startingHour: DataHandler.getCurrentTime(),
+              sleepType: currentSleepType,
+              sleepDuration: currentDuration
+          )
+      );
+    }
+    else
+      showErrorDialog();
+
   }
 
     @override
@@ -124,89 +150,11 @@ class HomePageState extends State<HomePage> {
                   DateAndTime(),
                   InkWell(
                     onTap: showSleepTypeDialog,
-                    child: Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 2,
-                              child: Image.asset(
-                                'assets/images/sleep.png',
-                                color: Colors.blueAccent,
-                                height: 40,
-                              ),
-                            ),
-                            Expanded(
-
-                              flex: 8, // 60%
-                              child: Container(
-                                margin: EdgeInsets.all(15),
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      'Sleep type',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 24, color: Colors.blueAccent),
-                                    ),
-                                    Text(
-                                      currentSleepType,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 18,
-                                          color: Colors.black87),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        decoration: new BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 0.1,
-                          ),)
-                    ),
+                    child: SleepTypeRow(currentSleepType: currentSleepType,),
                   ),
                   InkWell(
                     onTap: showDurationDialog,
-                    child: Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 2,
-                                child: Image.asset(
-                                  'assets/images/clock.png', color: Colors
-                                    .blueAccent, height: 40,)),
-                            Expanded(
-                              flex: 8, // 60%
-                              child: Container(
-                                margin: EdgeInsets.all(15),
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      'Sleep duration',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 24, color: Colors.blueAccent),
-                                    ),
-                                    Text(
-                                      currentDuration,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 18,
-                                          color: Colors.black87),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        decoration: new BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 0.1,
-                          ),)
-                    ),
+                    child: DurationRow(currentDuration: currentDuration,),
                   ),
                 ],
               ),
@@ -310,8 +258,107 @@ class ClosingButton extends StatelessWidget{
       child: RaisedButton(
         color: Colors.blueAccent,
         onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-        child: Text('Close',textAlign: TextAlign.center,),
+        child: Text(
+          'Close',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white)),
       ),
+    );
+  }
+
+}
+class SleepTypeRow extends StatelessWidget{
+  SleepTypeRow({Key key, this.currentSleepType}) : super(key: key);
+  final String currentSleepType;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Image.asset(
+                'assets/images/sleep.png',
+                color: Colors.blueAccent,
+                height: 40,
+              ),
+            ),
+            Expanded(
+
+              flex: 8, // 60%
+              child: Container(
+                margin: EdgeInsets.all(15),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Sleep type',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 24, color: Colors.blueAccent),
+                    ),
+                    Text(
+                      currentSleepType,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18,
+                          color: Colors.black87),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+        decoration: new BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 0.1,
+          ),)
+    );
+  }
+
+}
+class DurationRow extends StatelessWidget{
+  DurationRow({Key key, this.currentDuration}) : super(key: key);
+  final String currentDuration;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+                flex: 2,
+                child: Image.asset(
+                  'assets/images/clock.png', color: Colors
+                    .blueAccent, height: 40,)),
+            Expanded(
+              flex: 8, // 60%
+              child: Container(
+                margin: EdgeInsets.all(15),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Sleep duration',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 24, color: Colors.blueAccent),
+                    ),
+                    Text(
+                      currentDuration,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18,
+                          color: Colors.black87),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        decoration: new BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 0.1,
+          ),)
     );
   }
 

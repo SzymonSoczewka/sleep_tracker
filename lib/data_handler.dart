@@ -23,7 +23,7 @@ class DataHandler {
   static String getCurrentTime(){
     refresh();
     String minutesAsString = prependZero(minutes);
-    return '$hour:$minutes';
+    return '$hour:$minutesAsString';
   }
   static String intToMonthShort(){
     refresh();

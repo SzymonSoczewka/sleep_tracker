@@ -19,7 +19,6 @@ class MainView extends StatelessWidget {
             backgroundColor: Colors.amber[300],
           ),
           body: HomePage(title: 'RB'),
-
       ),
     );
   }
@@ -37,7 +36,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   List<SleepRecord> sleepRecords = new SleepRecordsDB().getSleepRecords();
 
-    addRecord(BuildContext context) async {
+    void addRecord(BuildContext context) async {
 
      DataHandler.refresh();
     final result = await Navigator.push(
@@ -81,59 +80,7 @@ class HomePageState extends State<HomePage> {
               width: 350,
             ),
             PresentDate(),
-            Column(
-              children: sleepRecords.reversed.map( (record){
-                return Container(
-                  margin: EdgeInsets.only(
-                    left: 5,
-                    right: 5
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 2, // 20%
-                        child: Container(
-                            child: Text(
-                              record.getStartingHour(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
-                            ),
-                          decoration: new BoxDecoration(
-                              color: Colors.grey[100],
-                          ),
-                          height: 50,
-                          alignment: Alignment.center,
-                            ),
-                      ),
-                      Expanded(
-                        flex: 8, // 60%
-                        child: Container(
-                            child: Column(
-                              children: <Widget>[
-                                Text(
-                                    record.getSleepType(),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 24,color: Colors.blueAccent),
-                                ),
-                                Text(
-                                    record.getSleepDuration(),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 18,color: Colors.grey[600]),
-                                ),
-                              ],
-                            ),
-                      ),
-                      )
-                    ],
-                  ),
-                  decoration: new BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 0.1,
-                    ),),
-                );
-              }).toList(),
-            ),
+            RecordsList(sleepRecords: sleepRecords,),
           ],
         )
     );
@@ -141,20 +88,7 @@ class HomePageState extends State<HomePage> {
 
 }
 
-class PresentDate extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-          top: 40,
-          bottom: 20
-      ),
-      alignment: Alignment.center,
-      child: Text(DataHandler.getCurrentDate(),style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-    );
-  }
 
-}
 class MainPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -182,4 +116,78 @@ class Introduction extends StatelessWidget {
   }
 
 }
+class PresentDate extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+          top: 40,
+          bottom: 20
+      ),
+      alignment: Alignment.center,
+      child: Text(DataHandler.getCurrentDate(),style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+    );
+  }
 
+}
+class RecordsList extends StatelessWidget {
+  RecordsList({Key key, this.sleepRecords}) : super(key: key);
+  List<SleepRecord> sleepRecords = new SleepRecordsDB().getSleepRecords();
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: sleepRecords.reversed.map( (record){
+        return Container(
+          margin: EdgeInsets.only(
+              left: 5,
+              right: 5
+          ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 2, // 20%
+                child: Container(
+                  child: Text(
+                    record.getStartingHour(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
+                  ),
+                  decoration: new BoxDecoration(
+                    color: Colors.grey[100],
+                  ),
+                  height: 50,
+                  alignment: Alignment.center,
+                ),
+              ),
+              Expanded(
+                flex: 8, // 60%
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        record.getSleepType(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 24,color: Colors.blueAccent),
+                      ),
+                      Text(
+                        record.getSleepDuration(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18,color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+          decoration: new BoxDecoration(
+            border: Border.all(
+              color: Colors.black,
+              width: 0.1,
+            ),),
+        );
+      }).toList(),
+    );
+  }
+
+}
