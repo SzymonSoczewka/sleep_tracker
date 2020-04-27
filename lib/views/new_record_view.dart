@@ -147,7 +147,7 @@ class HomePageState extends State<HomePage> {
               MainPicture(),
               Column(
                 children: <Widget>[
-                  DateAndTime(),
+                  DateAndTimeRow(),
                   InkWell(
                     onTap: showSleepTypeDialog,
                     child: SleepTypeRow(currentSleepType: currentSleepType,),
@@ -158,30 +158,34 @@ class HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              Container(
-                margin: EdgeInsets.only(
-                    top: 60.0
-                ),
-                child: RaisedButton(
-                  onPressed: executeSave,
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(45.0),
-                  ),
-                  color: Colors.blueAccent,
-                ),
-                height: 70,
-                width: 350,
-              )
+              saveButton()
             ],
           )
       );
+    }
+
+    Container saveButton() {
+      return Container(
+              margin: EdgeInsets.only(
+                  top: 60.0
+              ),
+              child: RaisedButton(
+                onPressed: executeSave,
+                child: Text(
+                  'Save',
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(45.0),
+                ),
+                color: Colors.blueAccent,
+              ),
+              height: 70,
+              width: 350,
+            );
     }
   }
 
@@ -206,7 +210,7 @@ class MainPicture extends StatelessWidget {
     );
   }
 }
-class DateAndTime extends StatelessWidget {
+class DateAndTimeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
    return Container(
@@ -244,26 +248,6 @@ class DateAndTime extends StatelessWidget {
          width: 0.1,
        ),) ,
    );
-  }
-
-}
-class ClosingButton extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-          left: 20,
-          right:20
-      ),
-      child: RaisedButton(
-        color: Colors.blueAccent,
-        onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-        child: Text(
-          'Close',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white)),
-      ),
-    );
   }
 
 }
@@ -359,6 +343,26 @@ class DurationRow extends StatelessWidget{
             color: Colors.black,
             width: 0.1,
           ),)
+    );
+  }
+
+}
+class ClosingButton extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: 20,
+          right:20
+      ),
+      child: RaisedButton(
+        color: Colors.blueAccent,
+        onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+        child: Text(
+            'Close',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white)),
+      ),
     );
   }
 

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleeptracker/data_handler.dart';
 import 'package:sleeptracker/model/sleep_record.dart';
-import 'package:sleeptracker/model/sleep_recordsDB.dart';
 import 'package:sleeptracker/views/new_record_view.dart';
 
 void main() => runApp(MainView());
@@ -56,36 +55,43 @@ class HomePageState extends State<HomePage> {
           children: <Widget>[
             MainPicture(),
             Introduction(),
-            Container(
-              margin: EdgeInsets.only(
-                  top: 25.0
-              ),
-              child: RaisedButton(
-                onPressed: (){
-                  addRecord(context);
-                },
-                child: Text(
-                  'Add new sleeping record',
-                  style:TextStyle(
-                      fontSize: 20,
-                      color: Colors.white
-                  ),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(45.0),
-                ),
-                color: Colors.blueAccent,
-              ),
-              height: 70,
-              width: 350,
-            ),
+            addNewButton(context),
             PresentDate(),
-            RecordsList(sleepRecords: sleepRecords,),
+            Column(
+              children: sleepRecords.reversed.map( (record){
+                return ListRow(sleepRecord: record,);
+              }).toList(),
+            ),
           ],
         )
     );
   }
 
+  Container addNewButton(BuildContext context) {
+    return Container(
+            margin: EdgeInsets.only(
+                top: 25.0
+            ),
+            child: RaisedButton(
+              onPressed: (){
+                addRecord(context);
+              },
+              child: Text(
+                'Add new sleeping record',
+                style:TextStyle(
+                    fontSize: 20,
+                    color: Colors.white
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(45.0),
+              ),
+              color: Colors.blueAccent,
+            ),
+            height: 70,
+            width: 350,
+          );
+  }
 }
 
 
@@ -130,64 +136,60 @@ class PresentDate extends StatelessWidget {
   }
 
 }
-class RecordsList extends StatelessWidget {
-  RecordsList({Key key, this.sleepRecords}) : super(key: key);
-  List<SleepRecord> sleepRecords = new SleepRecordsDB().getSleepRecords();
+class ListRow extends StatelessWidget {
+  final SleepRecord sleepRecord;
+  ListRow({this.sleepRecord});
+
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: sleepRecords.reversed.map( (record){
-        return Container(
-          margin: EdgeInsets.only(
-              left: 5,
-              right: 5
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 2, // 20%
-                child: Container(
-                  child: Text(
-                    record.getStartingHour(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
-                  ),
-                  decoration: new BoxDecoration(
-                    color: Colors.grey[100],
-                  ),
-                  height: 50,
-                  alignment: Alignment.center,
-                ),
+    return Container(
+      margin: EdgeInsets.only(
+          left: 5,
+          right: 5
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 2, // 20%
+            child: Container(
+              child: Text(
+                sleepRecord.getStartingHour(),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
               ),
-              Expanded(
-                flex: 8, // 60%
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        record.getSleepType(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 24,color: Colors.blueAccent),
-                      ),
-                      Text(
-                        record.getSleepDuration(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18,color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
+              decoration: new BoxDecoration(
+                color: Colors.grey[100],
+              ),
+              height: 50,
+              alignment: Alignment.center,
+            ),
           ),
-          decoration: new BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-              width: 0.1,
-            ),),
-        );
-      }).toList(),
+          Expanded(
+            flex: 8, // 60%
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    sleepRecord.getSleepType(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24,color: Colors.blueAccent),
+                  ),
+                  Text(
+                    sleepRecord.getSleepDuration(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18,color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+      decoration: new BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+          width: 0.1,
+        ),),
     );
-  }
-
-}
+  }}
