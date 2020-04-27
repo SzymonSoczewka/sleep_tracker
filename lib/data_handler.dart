@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class DataHandler {
   static var timeNow;
-  static int day = timeNow.day;
-  static int month = timeNow.month;
-  static int year = timeNow.year;
-  static int hour = TimeOfDay.now().hour;
-  static int minutes = TimeOfDay.now().minute;
+  static int day;
+  static int month;
+  static int year;
+  static int hour;
+  static int minutes;
   static String getCurrentDate(){
     refresh();
     String weekday = intToWeekday();

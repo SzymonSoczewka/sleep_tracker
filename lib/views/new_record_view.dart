@@ -136,7 +136,6 @@ class HomePageState extends State<HomePage> {
     }
     else
       showErrorDialog();
-
   }
 
     @override
@@ -210,6 +209,7 @@ class MainPicture extends StatelessWidget {
     );
   }
 }
+
 class DateAndTimeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -347,6 +347,7 @@ class DurationRow extends StatelessWidget{
   }
 
 }
+
 class ClosingButton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
